@@ -20,6 +20,7 @@
  * @packageDocumentation
  */
 
+export * from './aws';
 export * from './awsS3';
 export * from './azure';
 export * from './bitbucket';

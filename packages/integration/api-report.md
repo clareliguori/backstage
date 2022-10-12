@@ -4,7 +4,59 @@
 
 ```ts
 import { Config } from '@backstage/config';
+import { CredentialProvider } from '@aws-sdk/types';
 import { RestEndpointMethodTypes } from '@octokit/rest';
+
+// @public
+export type AwsCredentials = {
+  accountId?: string;
+  stsRegion?: string;
+  provider: CredentialProvider;
+};
+
+// @public
+export interface AwsCredentialsProvider {
+  getCredentials(opts: AwsCredentialsProviderOpts): Promise<AwsCredentials>;
+}
+
+// @public
+export type AwsCredentialsProviderOpts = {
+  accountId?: string;
+  arn?: string;
+};
+
+// @public
+export type AwsIntegrationAccountConfig = {
+  accountId: string;
+  accessKeyId?: string;
+  secretAccessKey?: string;
+  roleName?: string;
+  partition?: string;
+  region?: string;
+  externalId?: string;
+};
+
+// @public
+export type AwsIntegrationConfig = {
+  accounts: AwsIntegrationAccountConfig[];
+  accountDefaults: AwsIntegrationDefaultAccountConfig;
+  mainAccount: AwsIntegrationMainAccountConfig;
+};
+
+// @public
+export type AwsIntegrationDefaultAccountConfig = {
+  roleName?: string;
+  partition?: string;
+  region?: string;
+  externalId?: string;
+};
+
+// @public
+export type AwsIntegrationMainAccountConfig = {
+  accessKeyId?: string;
+  secretAccessKey?: string;
+  region?: string;
+};
 
 // @public
 export class AwsS3Integration implements ScmIntegration {
@@ -153,6 +205,13 @@ export type BitbucketServerIntegrationConfig = {
   username?: string;
   password?: string;
 };
+
+// @public
+export class DefaultAwsCredentialsProvider implements AwsCredentialsProvider {
+  // (undocumented)
+  static fromConfig(config: Config): DefaultAwsCredentialsProvider;
+  getCredentials(opts: AwsCredentialsProviderOpts): Promise<AwsCredentials>;
+}
 
 // @public
 export class DefaultGithubCredentialsProvider
@@ -490,6 +549,9 @@ export function parseGerritGitilesUrl(
 
 // @public
 export function parseGerritJsonResponse(response: Response): Promise<unknown>;
+
+// @public
+export function readAwsIntegrationConfig(config: Config): AwsIntegrationConfig;
 
 // @public
 export function readAwsS3IntegrationConfig(
