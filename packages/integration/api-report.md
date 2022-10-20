@@ -30,6 +30,7 @@ export type AwsIntegrationAccountConfig = {
   accountId: string;
   accessKeyId?: string;
   secretAccessKey?: string;
+  profile?: string;
   roleName?: string;
   partition?: string;
   region?: string;
@@ -55,6 +56,7 @@ export type AwsIntegrationDefaultAccountConfig = {
 export type AwsIntegrationMainAccountConfig = {
   accessKeyId?: string;
   secretAccessKey?: string;
+  profile?: string;
   region?: string;
 };
 
