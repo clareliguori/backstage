@@ -22,10 +22,13 @@ import {
   AssumeRoleCommand,
 } from '@aws-sdk/client-sts';
 import { Config, ConfigReader } from '@backstage/config';
+import { promises } from 'fs';
 
 const env = process.env;
 let stsMock: AwsClientStub<STSClient>;
 let config: Config;
+
+jest.mock('fs', () => ({ promises: { readFile: jest.fn() } }));
 
 describe('DefaultAwsCredentialsProvider', () => {
   beforeEach(() => {
@@ -58,6 +61,10 @@ describe('DefaultAwsCredentialsProvider', () => {
             },
             {
               accountId: '444444444444',
+            },
+            {
+              accountId: '555555555555',
+              profile: 'my-profile',
             },
           ],
           accountDefaults: {
@@ -127,6 +134,12 @@ describe('DefaultAwsCredentialsProvider', () => {
     process.env.AWS_CREDENTIAL_EXPIRATION = new Date(
       '2022-01-10',
     ).toISOString();
+
+    const mockProfile = `[my-profile]
+    aws_access_key_id=ACCESS_KEY_ID_9
+    aws_secret_access_key=SECRET_ACCESS_KEY_9
+    `;
+    (promises.readFile as jest.Mock).mockResolvedValue(mockProfile);
   });
 
   afterEach(() => {
@@ -225,6 +238,21 @@ describe('DefaultAwsCredentialsProvider', () => {
       });
     });
 
+    it('retrieves the ini provider chain for the given account ID', async () => {
+      const provider = DefaultAwsCredentialsProvider.fromConfig(config);
+      const awsCredentials = await provider.getCredentials({
+        accountId: '555555555555',
+      });
+
+      expect(awsCredentials.accountId).toEqual('555555555555');
+
+      const creds = await awsCredentials.provider();
+      expect(creds).toEqual({
+        accessKeyId: 'ACCESS_KEY_ID_9',
+        secretAccessKey: 'SECRET_ACCESS_KEY_9',
+      });
+    });
+
     it('retrieves the default cred provider chain for the given account ID', async () => {
       const provider = DefaultAwsCredentialsProvider.fromConfig(config);
       const awsCredentials = await provider.getCredentials({
@@ -239,6 +267,30 @@ describe('DefaultAwsCredentialsProvider', () => {
         secretAccessKey: 'SECRET_ACCESS_KEY_10',
         sessionToken: 'SESSION_TOKEN_10',
         expiration: new Date('2022-01-10'),
+      });
+    });
+
+    it('retrieves ini provider chain from the main account', async () => {
+      const minConfig = new ConfigReader({
+        integrations: {
+          aws: {
+            mainAccount: {
+              profile: 'my-profile',
+            },
+          },
+        },
+      });
+      const provider = DefaultAwsCredentialsProvider.fromConfig(minConfig);
+      const awsCredentials = await provider.getCredentials({
+        accountId: '123456789012',
+      });
+
+      expect(awsCredentials.accountId).toEqual('123456789012');
+
+      const creds = await awsCredentials.provider();
+      expect(creds).toEqual({
+        accessKeyId: 'ACCESS_KEY_ID_9',
+        secretAccessKey: 'SECRET_ACCESS_KEY_9',
       });
     });
 

@@ -47,6 +47,10 @@ describe('readAwsIntegrationConfig', () => {
             region: 'not-us-east-1',
             externalId: 'there',
           },
+          {
+            accountId: '444444444444',
+            profile: 'my-profile',
+          },
         ],
         accountDefaults: {
           roleName: 'backstage-role',
@@ -84,6 +88,10 @@ describe('readAwsIntegrationConfig', () => {
           region: 'not-us-east-1',
           externalId: 'there',
         },
+        {
+          accountId: '444444444444',
+          profile: 'my-profile',
+        },
       ],
       accountDefaults: {
         roleName: 'backstage-role',
@@ -95,6 +103,55 @@ describe('readAwsIntegrationConfig', () => {
         accessKeyId: 'GHI',
         secretAccessKey: 'JKL',
         region: 'ap-northeast-1',
+      },
+    });
+  });
+
+  it('reads profile for main account', () => {
+    const output = readAwsIntegrationConfig(
+      buildConfig({
+        accounts: [
+          {
+            accountId: '111111111111',
+            accessKeyId: 'ABC',
+            secretAccessKey: 'EDF',
+            roleName: 'hello',
+            partition: 'aws',
+            region: 'us-east-1',
+            externalId: 'world',
+          },
+        ],
+        accountDefaults: {
+          roleName: 'backstage-role',
+          partition: 'aws',
+          region: 'us-east-1',
+          externalId: 'my-id',
+        },
+        mainAccount: {
+          profile: 'my-profile',
+        },
+      }),
+    );
+    expect(output).toEqual({
+      accounts: [
+        {
+          accountId: '111111111111',
+          accessKeyId: 'ABC',
+          secretAccessKey: 'EDF',
+          roleName: 'hello',
+          partition: 'aws',
+          region: 'us-east-1',
+          externalId: 'world',
+        },
+      ],
+      accountDefaults: {
+        roleName: 'backstage-role',
+        partition: 'aws',
+        region: 'us-east-1',
+        externalId: 'my-id',
+      },
+      mainAccount: {
+        profile: 'my-profile',
       },
     });
   });
@@ -144,6 +201,35 @@ describe('readAwsIntegrationConfig', () => {
         }),
       ),
     ).toThrow(/no access key ID/);
+    expect(() =>
+      readAwsIntegrationConfig(
+        buildConfig({
+          accounts: [
+            validAccount,
+            {
+              accountId: '222222222222',
+              accessKeyId: 'ABC',
+              secretAccessKey: 'DEF',
+              profile: 'my-profile',
+            },
+          ],
+        }),
+      ),
+    ).toThrow(/only one must be specified/);
+    expect(() =>
+      readAwsIntegrationConfig(
+        buildConfig({
+          accounts: [
+            validAccount,
+            {
+              accountId: '222222222222',
+              roleName: 'my-role',
+              profile: 'my-profile',
+            },
+          ],
+        }),
+      ),
+    ).toThrow(/only one must be specified/);
     expect(() =>
       readAwsIntegrationConfig(
         buildConfig({
@@ -204,6 +290,17 @@ describe('readAwsIntegrationConfig', () => {
         }),
       ),
     ).toThrow(/no access key ID/);
+    expect(() =>
+      readAwsIntegrationConfig(
+        buildConfig({
+          mainAccount: {
+            accessKeyId: 'ABC',
+            secretAccessKey: 'DEF',
+            profile: 'my-profile',
+          },
+        }),
+      ),
+    ).toThrow(/only one must be specified/);
   });
 
   it('rejects invalid combinations of account default attributes', () => {

@@ -31,7 +31,10 @@ import {
   STSClient,
 } from '@aws-sdk/client-sts';
 import { defaultProvider } from '@aws-sdk/credential-provider-node';
-import { fromTemporaryCredentials } from '@aws-sdk/credential-providers';
+import {
+  fromIni,
+  fromTemporaryCredentials,
+} from '@aws-sdk/credential-providers';
 import { CredentialProvider } from '@aws-sdk/types';
 import { parse } from '@aws-sdk/util-arn-parser';
 import { Config } from '@backstage/config';
@@ -65,6 +68,19 @@ function getStaticCredentials(
   };
 }
 
+function getProfileCredentials(
+  profile: string,
+  region?: string,
+): CredentialProvider {
+  return fromIni({
+    profile,
+    clientConfig: {
+      region,
+      customUserAgent: 'backstage-aws-credentials-provider',
+    },
+  });
+}
+
 function getDefaultCredentialsChain(): CredentialProvider {
   return defaultProvider({
     roleAssumerWithWebIdentity: getDefaultRoleAssumerWithWebIdentity(),
@@ -78,7 +94,8 @@ function getDefaultCredentialsChain(): CredentialProvider {
  * 1. Assume role with static creds
  * 2. Assume role with main account creds
  * 3. Static creds
- * 4. Default AWS SDK creds chain
+ * 4. Profile creds
+ * 5. Default AWS SDK creds chain
  */
 function getAccountCredentialsProvider(
   config: AwsIntegrationAccountConfig,
@@ -108,6 +125,10 @@ function getAccountCredentialsProvider(
     return getStaticCredentials(config.accessKeyId!, config.secretAccessKey!);
   }
 
+  if (config.profile) {
+    return getProfileCredentials(config.profile!, config.region);
+  }
+
   return getDefaultCredentialsChain();
 }
 
@@ -116,13 +137,18 @@ function getAccountCredentialsProvider(
  *
  * Order of precedence:
  * 1. Static creds
- * 2. Default AWS SDK creds chain
+ * 2. Profile creds
+ * 3. Default AWS SDK creds chain
  */
 function getMainAccountCredentialsProvider(
   config: AwsIntegrationMainAccountConfig,
 ): CredentialProvider {
   if (config.accessKeyId) {
     return getStaticCredentials(config.accessKeyId!, config.secretAccessKey!);
+  }
+
+  if (config.profile) {
+    return getProfileCredentials(config.profile!, config.region);
   }
 
   return getDefaultCredentialsChain();

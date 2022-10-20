@@ -38,6 +38,12 @@ export type AwsIntegrationAccountConfig = {
   secretAccessKey?: string;
 
   /**
+   * The configuration profile from a credentials file at ~/.aws/credentials and
+   * a configuration file at ~/.aws/config.
+   */
+  profile?: string;
+
+  /**
    * The IAM role to assume to retrieve temporary AWS credentials
    */
   roleName?: string;
@@ -73,6 +79,12 @@ export type AwsIntegrationMainAccountConfig = {
    * The secret access key for a set of static AWS credentials
    */
   secretAccessKey?: string;
+
+  /**
+   * The configuration profile from a credentials file at ~/.aws/credentials and
+   * a configuration file at ~/.aws/config.
+   */
+  profile?: string;
 
   /**
    * The STS regional endpoint to use for the main account, e.g. "ap-northeast-1"
@@ -141,6 +153,7 @@ function readAwsIntegrationAccountConfig(
     accountId: config.getString('accountId'),
     accessKeyId: config.getOptionalString('accessKeyId'),
     secretAccessKey: config.getOptionalString('secretAccessKey'),
+    profile: config.getOptionalString('profile'),
     roleName: config.getOptionalString('roleName'),
     region: config.getOptionalString('region'),
     partition: config.getOptionalString('partition'),
@@ -157,6 +170,18 @@ function readAwsIntegrationAccountConfig(
   if (!accountConfig.accessKeyId && accountConfig.secretAccessKey) {
     throw new Error(
       `AWS integration account ${accountConfig.accountId} has a secret access key configured, but no access key ID`,
+    );
+  }
+
+  if (accountConfig.profile && accountConfig.accessKeyId) {
+    throw new Error(
+      `AWS integration account ${accountConfig.accountId} has both an access key ID and a profile configured, but only one must be specified`,
+    );
+  }
+
+  if (accountConfig.profile && accountConfig.roleName) {
+    throw new Error(
+      `AWS integration account ${accountConfig.accountId} has both an access key ID and a role name configured, but only one must be specified`,
     );
   }
 
@@ -192,6 +217,7 @@ function readMainAwsIntegrationAccountConfig(
   const mainAccountConfig = {
     accessKeyId: config.getOptionalString('accessKeyId'),
     secretAccessKey: config.getOptionalString('secretAccessKey'),
+    profile: config.getOptionalString('profile'),
     region: config.getOptionalString('region'),
   };
 
@@ -204,7 +230,13 @@ function readMainAwsIntegrationAccountConfig(
 
   if (!mainAccountConfig.accessKeyId && mainAccountConfig.secretAccessKey) {
     throw new Error(
-      `The main AWS integration account  has a secret access key configured, but no access key ID`,
+      `The main AWS integration account has a secret access key configured, but no access key ID`,
+    );
+  }
+
+  if (mainAccountConfig.profile && mainAccountConfig.accessKeyId) {
+    throw new Error(
+      `The main AWS integration account has both an access key ID and a profile configured, but only one must be specified`,
     );
   }
 
