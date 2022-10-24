@@ -23,7 +23,7 @@ import {
 import {
   AwsCredentials,
   AwsCredentialsProvider,
-  AwsCredentialsProviderOpts,
+  AwsCredentialsProviderOptions,
 } from './types';
 import {
   getDefaultRoleAssumerWithWebIdentity,
@@ -220,7 +220,7 @@ export class DefaultAwsCredentialsProvider implements AwsCredentialsProvider {
    * @returns A promise of {@link AwsCredentials}.
    */
   async getCredentials(
-    opts: AwsCredentialsProviderOpts,
+    opts: AwsCredentialsProviderOptions,
   ): Promise<AwsCredentials> {
     // Determine the account ID: either explicitly provided or extracted from the provided ARN
     let accountId = opts.accountId;

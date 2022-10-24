@@ -31,7 +31,7 @@ export type AwsCredentials = {
  *
  * @public
  */
-export type AwsCredentialsProviderOpts = {
+export type AwsCredentialsProviderOptions = {
   /**
    * The AWS account ID, e.g. '0123456789012'
    */
@@ -53,5 +53,5 @@ export interface AwsCredentialsProvider {
   /**
    * Get credentials for an AWS account.
    */
-  getCredentials(opts: AwsCredentialsProviderOpts): Promise<AwsCredentials>;
+  getCredentials(opts: AwsCredentialsProviderOptions): Promise<AwsCredentials>;
 }

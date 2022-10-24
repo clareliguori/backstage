@@ -25,5 +25,5 @@ export { DefaultAwsCredentialsProvider } from './DefaultAwsCredentialsProvider';
 export type {
   AwsCredentials,
   AwsCredentialsProvider,
-  AwsCredentialsProviderOpts,
+  AwsCredentialsProviderOptions,
 } from './types';

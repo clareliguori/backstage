@@ -16,11 +16,11 @@ export type AwsCredentials = {
 
 // @public
 export interface AwsCredentialsProvider {
-  getCredentials(opts: AwsCredentialsProviderOpts): Promise<AwsCredentials>;
+  getCredentials(opts: AwsCredentialsProviderOptions): Promise<AwsCredentials>;
 }
 
 // @public
-export type AwsCredentialsProviderOpts = {
+export type AwsCredentialsProviderOptions = {
   accountId?: string;
   arn?: string;
 };
@@ -212,7 +212,7 @@ export type BitbucketServerIntegrationConfig = {
 export class DefaultAwsCredentialsProvider implements AwsCredentialsProvider {
   // (undocumented)
   static fromConfig(config: Config): DefaultAwsCredentialsProvider;
-  getCredentials(opts: AwsCredentialsProviderOpts): Promise<AwsCredentials>;
+  getCredentials(opts: AwsCredentialsProviderOptions): Promise<AwsCredentials>;
 }
 
 // @public
