@@ -8,7 +8,7 @@
 <p><b>Signature:</b></p>
 <pre><code class="hljs css language-typescript"><span class="hljs-keyword">type</span> UrlReader = {
     read(url: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">Promise</span>&lt;Buffer&gt;;
-    readUrl?(url: <span class="hljs-built_in">string</span>, options?: ReadUrlOptions): <span class="hljs-built_in">Promise</span>&lt;ReadUrlResponse&gt;;
+    readUrl(url: <span class="hljs-built_in">string</span>, options?: ReadUrlOptions): <span class="hljs-built_in">Promise</span>&lt;ReadUrlResponse&gt;;
     readTree(url: <span class="hljs-built_in">string</span>, options?: ReadTreeOptions): <span class="hljs-built_in">Promise</span>&lt;ReadTreeResponse&gt;;
     search(url: <span class="hljs-built_in">string</span>, options?: SearchOptions): <span class="hljs-built_in">Promise</span>&lt;SearchResponse&gt;;
 };
