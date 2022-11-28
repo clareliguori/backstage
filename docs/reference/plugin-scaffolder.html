@@ -22,6 +22,7 @@
 <tbody>
 <tr><td><a href="/docs/reference/plugin-scaffolder.createscaffolderfieldextension">createScaffolderFieldExtension(options)</a></td><td>Method for creating field extensions that can be used in the scaffolder frontend form.</td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.createscaffolderlayout">createScaffolderLayout(options)</a></td><td>Method for creating custom Layouts that can be used in the scaffolder frontend form</td></tr>
+<tr><td><a href="/docs/reference/plugin-scaffolder.makefieldschemafromzod">makeFieldSchemaFromZod(returnSchema, uiOptionsSchema)</a></td><td>Utility function to convert zod return and UI options schemas to a CustomFieldExtensionSchema with FieldExtensionComponentProps type inference</td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.templatetypepicker">TemplateTypePicker()</a></td><td>The component to select the <code>type</code> of <code>Template</code> that you will see in the table.</td></tr>
 </tbody>
 </table>
@@ -31,13 +32,9 @@
 <tr><th>Interface</th><th>Description</th></tr>
 </thead>
 <tbody>
-<tr><td><a href="/docs/reference/plugin-scaffolder.entitypickeruioptions">EntityPickerUiOptions</a></td><td>The input props that can be specified under <code>ui:options</code> for the <code>EntityPicker</code> field extension.</td></tr>
-<tr><td><a href="/docs/reference/plugin-scaffolder.entitytagspickeruioptions">EntityTagsPickerUiOptions</a></td><td>The input props that can be specified under <code>ui:options</code> for the <code>EntityTagsPicker</code> field extension.</td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.fieldextensioncomponentprops">FieldExtensionComponentProps</a></td><td>Type for field extensions and being able to type incoming props easier.</td></tr>
+<tr><td><a href="/docs/reference/plugin-scaffolder.fieldschema">FieldSchema</a></td><td>FieldSchema encapsulates a JSONSchema7 along with the matching FieldExtensionComponentProps type for a field extension.</td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.layoutoptions">LayoutOptions</a></td><td>The type of layouts that is passed to the TemplateForms</td></tr>
-<tr><td><a href="/docs/reference/plugin-scaffolder.ownedentitypickeruioptions">OwnedEntityPickerUiOptions</a></td><td>The input props that can be specified under <code>ui:options</code> for the <code>OwnedEntityPicker</code> field extension.</td></tr>
-<tr><td><a href="/docs/reference/plugin-scaffolder.ownerpickeruioptions">OwnerPickerUiOptions</a></td><td>The input props that can be specified under <code>ui:options</code> for the <code>OwnerPicker</code> field extension.</td></tr>
-<tr><td><a href="/docs/reference/plugin-scaffolder.repourlpickeruioptions">RepoUrlPickerUiOptions</a></td><td>The input props that can be specified under <code>ui:options</code> for the <code>RepoUrlPicker</code> field extension.</td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.scaffolderapi">ScaffolderApi</a></td><td>An API to interact with the scaffolder backend.</td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.scaffolderdryrunoptions">ScaffolderDryRunOptions</a></td><td></td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.scaffolderdryrunresponse">ScaffolderDryRunResponse</a></td><td></td></tr>
@@ -57,11 +54,16 @@
 <tbody>
 <tr><td><a href="/docs/reference/plugin-scaffolder.entitynamepickerfieldextension">EntityNamePickerFieldExtension</a></td><td>The field extension for selecting a name for a new Entity in the Catalog.</td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.entitypickerfieldextension">EntityPickerFieldExtension</a></td><td>A field extension for selecting an Entity that exists in the Catalog.</td></tr>
+<tr><td><a href="/docs/reference/plugin-scaffolder.entitypickerfieldschema">EntityPickerFieldSchema</a></td><td></td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.entitytagspickerfieldextension">EntityTagsPickerFieldExtension</a></td><td>EntityTagsPickerFieldExtension</td></tr>
+<tr><td><a href="/docs/reference/plugin-scaffolder.entitytagspickerfieldschema">EntityTagsPickerFieldSchema</a></td><td></td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.ownedentitypickerfieldextension">OwnedEntityPickerFieldExtension</a></td><td>A field extension to show all the Entities that are owned by the current logged-in User for use in templates.</td></tr>
+<tr><td><a href="/docs/reference/plugin-scaffolder.ownedentitypickerfieldschema">OwnedEntityPickerFieldSchema</a></td><td></td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.ownerpickerfieldextension">OwnerPickerFieldExtension</a></td><td>A field extension for picking users and groups out of the Catalog.</td></tr>
+<tr><td><a href="/docs/reference/plugin-scaffolder.ownerpickerfieldschema">OwnerPickerFieldSchema</a></td><td></td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.repopickervalidation">repoPickerValidation</a></td><td>The validation function for the <code>repoUrl</code> that is returned from the field extension. Ensures that you have all the required fields filled for the different providers that exist.</td></tr>
-<tr><td><a href="/docs/reference/plugin-scaffolder.repourlpickerfieldextension">RepoUrlPickerFieldExtension</a></td><td>The field extension which provides the ability to select a RepositoryUrl. Currently this is an encoded URL that looks something like the following <code>github.com?repo=myRepoName&amp;owner=backstage</code>.</td></tr>
+<tr><td><a href="/docs/reference/plugin-scaffolder.repourlpickerfieldextension">RepoUrlPickerFieldExtension</a></td><td>The field extension which provides the ability to select a RepositoryUrl. Currently, this is an encoded URL that looks something like the following <code>github.com?repo=myRepoName&amp;owner=backstage</code>.</td></tr>
+<tr><td><a href="/docs/reference/plugin-scaffolder.repourlpickerfieldschema">RepoUrlPickerFieldSchema</a></td><td></td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.rootrouteref">rootRouteRef</a></td><td></td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.scaffolderapiref">scaffolderApiRef</a></td><td>Utility API reference for the <a href="/docs/reference/plugin-scaffolder.scaffolderapi">ScaffolderApi</a><!-- -->.</td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.scaffolderfieldextensions">ScaffolderFieldExtensions</a></td><td>The Wrapping component for defining fields extensions inside</td></tr>
@@ -79,13 +81,20 @@
 <tr><th>Type Alias</th><th>Description</th></tr>
 </thead>
 <tbody>
+<tr><td><a href="/docs/reference/plugin-scaffolder.customfieldextensionschema">CustomFieldExtensionSchema</a></td><td>Type for the Custom Field Extension schema.</td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.customfieldvalidator">CustomFieldValidator</a></td><td>Field validation type for Custom Field Extensions.</td></tr>
+<tr><td><a href="/docs/reference/plugin-scaffolder.entitypickeruioptions">EntityPickerUiOptions</a></td><td>The input props that can be specified under <code>ui:options</code> for the <code>EntityPicker</code> field extension.</td></tr>
+<tr><td><a href="/docs/reference/plugin-scaffolder.entitytagspickeruioptions">EntityTagsPickerUiOptions</a></td><td>The input props that can be specified under <code>ui:options</code> for the <code>EntityTagsPicker</code> field extension.</td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.fieldextensioncomponent">FieldExtensionComponent</a></td><td>A type used to wrap up the FieldExtension to embed the ReturnValue and the InputProps</td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.fieldextensionoptions">FieldExtensionOptions</a></td><td>Type for the Custom Field Extension with the name and components and validation function.</td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.layoutcomponent">LayoutComponent</a></td><td>The type used to wrap up the Layout and embed the input props</td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.layouttemplate">LayoutTemplate</a></td><td>The field template from @<!-- -->rjsf/core which is a react component that gets passed @<!-- -->rjsf/core field related props.</td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.listactionsresponse">ListActionsResponse</a></td><td>The response shape for the <code>listActions</code> call to the <code>scaffolder-backend</code></td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.logevent">LogEvent</a></td><td>The shape of a <code>LogEvent</code> message from the <code>scaffolder-backend</code></td></tr>
+<tr><td><a href="/docs/reference/plugin-scaffolder.ownedentitypickeruioptions">OwnedEntityPickerUiOptions</a></td><td>The input props that can be specified under <code>ui:options</code> for the <code>OwnedEntityPicker</code> field extension.</td></tr>
+<tr><td><a href="/docs/reference/plugin-scaffolder.ownerpickeruioptions">OwnerPickerUiOptions</a></td><td>The input props that can be specified under <code>ui:options</code> for the <code>OwnerPicker</code> field extension.</td></tr>
+<tr><td><a href="/docs/reference/plugin-scaffolder.repourlpickeruioptions">RepoUrlPickerUiOptions</a></td><td>The input props that can be specified under <code>ui:options</code> for the <code>RepoUrlPicker</code> field extension.</td></tr>
+<tr><td><a href="/docs/reference/plugin-scaffolder.reviewstepprops">ReviewStepProps</a></td><td>The props for the Last Step in scaffolder template form. Which represents the summary of the input provided by the end user.</td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.routerprops">RouterProps</a></td><td>The props for the entrypoint <code>ScaffolderPage</code> component the plugin.</td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.scaffolderoutputlink">ScaffolderOutputLink</a></td><td></td></tr>
 <tr><td><a href="/docs/reference/plugin-scaffolder.scaffoldertask">ScaffolderTask</a></td><td>The shape of each task returned from the <code>scaffolder-backend</code></td></tr>
